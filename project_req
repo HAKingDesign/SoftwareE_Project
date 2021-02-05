@@ -1,9 +1,7 @@
-draw/ display cards
+display cards
 deck
   shuffle deck
 card values
 ace case
-hit
-stand
-bust
+moves:hit/stand/bust/draw
 dealer rules
