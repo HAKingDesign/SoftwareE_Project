@@ -6,38 +6,84 @@ class Card:
         self.suit = suit
 
 
-def CreateDeck():
-    suits = ['heart', 'diamonds', 'spades', 'clubs']
-    
-    #values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-    #if we want cards to say jack queen king and ace we can use values like we did suits
+def main():
+    choice = 'y'
+    while choice == 'y':
+        playGame()
+        choice = input("Play again?(y)" )
 
-    deck = [Card(value, suit) for value in range(1, 14) for suit in suits]
+
+#creates a list where each card as a suit and a value
+def CreateDeck():
+    suits = ['hearts', 'diamonds', 'spades', 'clubs']
+    values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+
+    deck = [Card(value, suit) for value in values for suit in suits]
+    #shuffle the list and return it
     random.shuffle(deck)
 
-    #print deck to see if it works
-    for i in range(52):
-        print(deck[i].value, deck[i].suit)
-
-
-    #simulates dealing a hand for blackjack
-    deal = input("Would you like a hand (1 for yes)?: ")
-    deal = int(deal)
-    pos = 0
-
-    while (deal == 1):
-        pos = DealCards(deck, pos)
+    return deck
         
-        deal = input("Would you like another hand (1 for yes)?: ")
-        deal = int(deal)
+#fuction that controls the game
+def playGame():
+    #get a deck from createDeck
+    deck = CreateDeck()
+
+    #pop 2 cards from the deck to the players hand
+    hand = [deck.pop(), deck.pop()]
+
+    print("Your hand:" ,hand[0].value ,hand[0].suit ,hand[1].value ,hand[1].suit)
+    
+    #since i used strings for the values i needed a function to convert them to the proper integer value
+    card1 = getValue(hand[0].value)
+    card2 = getValue(hand[1].value)
+
+    total = card1 + card2
+    print("Total value =", total)
+
+    #the player can keep hitting until the value of there hand is >= 21
+    while total <= 21:
+        print("(1) to Stand\n(2) to hit")
+        choice = input()
         
-#deals 2 cards at a time returns pos to keep track of position in deck
-def DealCards(deck, pos):
-    print("Dealing cards: \n")
+        #if they hit pop another card and append it to the players hand
+        if int(choice) == 2:
+            newCard = deck.pop()
+            hand.append(newCard)
+            print("Your new hand:") 
+            for i in range(len(hand)):
+                print(hand[i].value, hand[i].suit)
+            
+            #again need to get the cards real value to add it to the total
+            newCardValue = getValue(newCard.value)
+            total = total + newCardValue
+            print("Total value =", total)
+        #if the player doesnt enter 2 then they stand 
+        #   standing is useless without a dealer so we can add the dealer next time
+        else:
+            print("You stood with", total)
+            break
 
-    print(deck[pos].value, deck[pos].suit , ' ', deck[pos+1].value, deck[pos+1].suit)
+        #if the total is > 21 then the player busts
+        if total > 21:
+            print("Sorry you busted")
+        #if total is 21 then they got a blackjack
+        if total == 21:
+            print("BLACKJACK, CONGRATULATIONS!")
+            break
 
-    return (pos+2)
+#the function to get the true value of the card
+def getValue(card):
+    if card == "Jack":
+        value = 10
+    elif card == "Queen":
+        value = 10
+    elif card == "King":
+        value = 10
+    elif card == "Ace":
+        value = 11
+    else:
+        value = int(card)
 
-
-CreateDeck()
+    return value
+main()
